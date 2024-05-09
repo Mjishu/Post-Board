@@ -12,10 +12,13 @@ const Schema = mongoose.Schema;
 require("dotenv").config()
 const bcrypt = require("bcryptjs")
 
+const MongoStore = require("connect-mongo");
+
 const mongoDB = process.env.mongoUrl;
 mongoose.connect(mongoDB);
 const db = mongoose.connection;
-db.on("error", console.error.bind(console,"mongo connection uh oh"))
+db.on("error", console.error.bind(console,"mongo connection uh oh"));
+
 
 const User = mongoose.model(
   "User",
@@ -39,7 +42,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(session({secret:process.env.sessionSecret, resave:false,saveUninitialized:true,}))
+app.use(session({
+  secret:process.env.sessionSecret,
+   resave:false,
+   saveUninitialized:true,
+   store: MongoStore.create({mongoUrl:mongoDB})
+
+}))
 app.use(passport.session());
 
 
@@ -84,14 +93,11 @@ passport.use(
   new LocalStrategy(async(username,password,done)=>{
     try{
       const user = await User.findOne({username:username})
-      console.log(user.username)
       if(!user){
-        console.log("incorrect user")
         return done(null,false, {message: "Incorrect username"})
       };
       const match = await bcrypt.compare(password,user.password);
       if(!match){
-        console.log("incorrect pwd")
         return done(null,false,{message:"Incorrect Password"})
       };
       return done(null,user)
@@ -122,14 +128,14 @@ app.post(
   })
 );
 
-const verifyCallback = (username,password,done) => {
-  User.findOne({username:username})
-  .then((user)=>{
-    if(!user) {return done(null, false)}
-      
-      const isValid = validPassword()
+app.get("/log-out", (req,res,next) =>{
+  req.logout((err)=>{
+    if(err){
+      return next(err);
+    }
+    res.redirect("/")
   })
-}
+})
 
 module.exports = app;
 
