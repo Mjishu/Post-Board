@@ -7,6 +7,5 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Home Page' });
 });
 
-router.post("/log-in", passport.authenticate("local"), (req,res,next)=>{})
 
 module.exports = router;

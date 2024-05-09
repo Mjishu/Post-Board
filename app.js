@@ -22,7 +22,7 @@ const User = mongoose.model(
   new Schema({
     firstName: {type:String ,required: true},
     lastName: {type:String ,required: true},
-    email: {type:String ,required: true},
+    username: {type:String ,required: true},
     password: {type:String ,required: true},
   })
 )
@@ -70,7 +70,7 @@ app.post("/sign-up", async(req,res,next)=>{
     const user = new User({
       firstName: req.body.firstName,
       lastName: req.body.lastName,
-      email: req.body.email,
+      username: req.body.username,
       password:hashedPassword
     })
     const result = await user.save();
@@ -83,11 +83,11 @@ app.post("/sign-up", async(req,res,next)=>{
 passport.use(
   new LocalStrategy(async(username,password,done)=>{
     try{
-      const user = await User.findOne({email:username})
-      console.log(user.email, user.username)
+      const user = await User.findOne({username:username})
+      console.log(user.username)
       if(!user){
         console.log("incorrect user")
-        return done(null,false, {message: "Incorrect email"})
+        return done(null,false, {message: "Incorrect username"})
       };
       const match = await bcrypt.compare(password,user.password);
       if(!match){
@@ -122,6 +122,14 @@ app.post(
   })
 );
 
+const verifyCallback = (username,password,done) => {
+  User.findOne({username:username})
+  .then((user)=>{
+    if(!user) {return done(null, false)}
+      
+      const isValid = validPassword()
+  })
+}
 
 module.exports = app;
 
