@@ -17,9 +17,6 @@ mongoose.connect(mongoDB);
 const db = mongoose.connection;
 db.on("error", console.error.bind(console,"mongo connection uh oh"))
 
-const indexRouter = require('./routes/index');
-const signUpRouter = require('./routes/signup');
-
 const User = mongoose.model(
   "User",
   new Schema({
@@ -46,7 +43,9 @@ app.use(session({secret:process.env.sessionSecret, resave:false,saveUninitialize
 app.use(passport.session());
 
 
-app.use('/', indexRouter);
+app.get("/", (req,res) =>{
+  res.render("index", {user:req.user})
+})
 app.get("/sign-up", (req,res) => res.render("sign-up-form"))
 
 // catch 404 and forward to error handler
@@ -66,7 +65,6 @@ app.use(function(err, req, res, next) {
 });
 
 app.post("/sign-up", async(req,res,next)=>{
-  console.log("starts post")
   try{
     const hashedPassword =await bcrypt.hash(req.body.password,10);
     const user = new User({
@@ -81,6 +79,50 @@ app.post("/sign-up", async(req,res,next)=>{
     return next(err)
   }
 })
+
+passport.use(
+  new LocalStrategy(async(username,password,done)=>{
+    try{
+      const user = await User.findOne({email:username})
+      console.log(user.email, user.username)
+      if(!user){
+        console.log("incorrect user")
+        return done(null,false, {message: "Incorrect email"})
+      };
+      const match = await bcrypt.compare(password,user.password);
+      if(!match){
+        console.log("incorrect pwd")
+        return done(null,false,{message:"Incorrect Password"})
+      };
+      return done(null,user)
+    }catch(err){return done(err)}
+  })
+)
+
+passport.serializeUser((user,done) => {
+  console.log("serialize user")
+  done(null, user.id)
+});
+
+passport.deserializeUser(async(id,done) => {
+  try{
+    const user = await User.findById(id);
+    console.log("user found")
+    done(null,user);
+  }catch(err){
+    console.log("user not found")
+    done(err)}
+})
+
+app.post(
+  "/log-in",
+  passport.authenticate("local", {
+    successRedirect: "/",
+    failureRedirect: "/"
+  })
+);
+
+
 module.exports = app;
 
-//todo problems with sign up button gives error 404 on line 50 so soemthings wrong i just dont know where at 
+//todo: Something wrong somewhere with log in, it doesnt actually log me in :3

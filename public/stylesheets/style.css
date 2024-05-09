@@ -1,7 +1,13 @@
+:root{
+  --primary-light: rgb(239, 240, 241);
+  --primary-dark:rgb(39, 38, 38);
+}
+
 body {
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-  background-color: rgb(239, 240, 241);
+  background-color: var(--primary-light);
+  color: var(--primary-dark);
 }
 
 a {
