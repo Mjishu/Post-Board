@@ -8,6 +8,7 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+const {body,validationResult} = require("express-validator")
 
 require("dotenv").config()
 const bcrypt = require("bcryptjs")
@@ -23,8 +24,7 @@ db.on("error", console.error.bind(console,"mongo connection uh oh"));
 const User = mongoose.model(
   "User",
   new Schema({
-    firstName: {type:String ,required: true},
-    lastName: {type:String ,required: true},
+    email: {type:String ,required: true},
     username: {type:String ,required: true},
     password: {type:String ,required: true},
   })
@@ -55,7 +55,7 @@ app.use(passport.session());
 app.get("/", (req,res) =>{
   res.render("index", {user:req.user})
 })
-app.get("/sign-up", (req,res) => res.render("sign-up-form"))
+app.get("/sign-up", (req,res) => res.render("sign-up-form",{ title:"Sign Up"}))
 
 // catch 404 and forward to error handler
 /*app.use(function(req, res, next) {
@@ -73,20 +73,37 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-app.post("/sign-up", async(req,res,next)=>{
-  try{
-    const hashedPassword =await bcrypt.hash(req.body.password,10);
-    const user = new User({
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
-      username: req.body.username,
-      password:hashedPassword
-    })
-    const result = await user.save();
-    res.redirect('/');
-  }catch(err){
-    return next(err)
-  }
+app.post("/sign-up", 
+  body('password', "password must be longer than 5 characters").isLength({min:5}).trim().escape(),
+  body('confirmPassword').custom((value,{req})=>{ //! Doesnt put error message in body?
+    if(value !== req.body.password){
+      return Promise.reject("Passwords do not match")
+    }
+    return true;
+  }).trim().withMessage("Passwords do not match").escape(),
+  body("email").trim().isEmail().withMessage("Not a valid email").escape(),
+  body("username", "username must not be empty").trim().isLength({min:1}).escape()
+
+  ,async(req,res,next)=>{
+
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+      res.render("sign-up-form", {title:"Sign Up Again", errors:errors.array()});
+      return
+    }
+
+    try{
+      const hashedPassword =await bcrypt.hash(req.body.password,10);
+      const user = new User({
+        email: req.body.email,
+        username: req.body.username,
+        password:hashedPassword
+      })
+      const result = await user.save();
+      res.redirect('/');
+    }catch(err){
+      return next(err)
+    }
 })
 
 passport.use(

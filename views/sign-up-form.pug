@@ -3,14 +3,12 @@ extends layout
 block content 
     h1= title
     form(method="POST")
-        label(for="firstName") First Name: 
-        input(name='firstName', type='text', placeholder ='First Name' required) 
-        br
-        label(for="lastName") Last Name: 
-        input(name='lastName', type='text', placeholder ='Last Name' required)
-        br
+        
         label(for="username" ) Username:
         input(name="username",placeholder="Username" type='username'  required)
+        br
+        label(for="email") Email: 
+        input(name='email', type='email', placeholder ='email' required) 
         br
         label(for="password") Password: 
         input(name="password", placeholder="Password", type="password" required)
