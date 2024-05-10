@@ -32,6 +32,7 @@ const User = mongoose.model(
 )
 
 const postsRoute = require("./routes/posts") //*
+const post_controller = require("./controllers/postController");
 
 const app = express();
 
@@ -57,7 +58,8 @@ app.use("/new-post", postsRoute);
 
 app.get("/", (req,res) =>{
   res.render("index", {user:req.user})
-})
+});
+
 app.get("/sign-up", (req,res) => res.render("sign-up-form",{ title:"Sign Up"}))
 
 // catch 404 and forward to error handler
@@ -157,7 +159,10 @@ app.get("/log-out", (req,res,next) =>{
   })
 })
 
+
+
 module.exports = app;
 
 //todo: populate a posts collection in mongo instead of having the posts hard written in code
 //todo: add membership status that gives an advanced functionality? maybe a checkmark on the page idk
+//todo: Add author tag to posts, make it so that it automatically gives the tag of the user who created it

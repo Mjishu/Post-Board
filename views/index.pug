@@ -5,10 +5,12 @@ block content
 
   if user
     h1 Welcome Back #{user.username}
+    block posts
     button.homePageButtons(onClick='window.location.href="/new-post"') Post something?
     button.homePageButtons Become a Member
     br
     button.homePageButtons(onClick="window.location.href='/log-out'") Log Out
+    
 
   else 
     h1 Please Log In!
