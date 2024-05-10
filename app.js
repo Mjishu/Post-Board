@@ -27,9 +27,11 @@ const User = mongoose.model(
     email: {type:String ,required: true},
     username: {type:String ,required: true},
     password: {type:String ,required: true},
+    member:{type:Boolean}
   })
 )
 
+const postsRoute = require("./routes/posts") //*
 
 const app = express();
 
@@ -51,6 +53,7 @@ app.use(session({
 }))
 app.use(passport.session());
 
+app.use("/new-post", postsRoute);
 
 app.get("/", (req,res) =>{
   res.render("index", {user:req.user})
@@ -156,4 +159,5 @@ app.get("/log-out", (req,res,next) =>{
 
 module.exports = app;
 
-//todo: Something wrong somewhere with log in, it doesnt actually log me in :3
+//todo: populate a posts collection in mongo instead of having the posts hard written in code
+//todo: add membership status that gives an advanced functionality? maybe a checkmark on the page idk
