@@ -3,8 +3,7 @@ const router = express.Router();
 const {format} = require("date-fns/format");
 
 const post_controller = require("../controllers/postController");
-
-//*---------------CREATE POSTS ---------------------------------------
+//* ----------------------CREATE POSTS ---------------------------------------
 
 router.get("/", post_controller.post_create_get);
 

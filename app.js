@@ -31,8 +31,8 @@ const User = mongoose.model(
   })
 )
 
-const postsRoute = require("./routes/posts") //*
-const post_controller = require("./controllers/postController");
+const postsRoute = require("./routes/posts");
+const postController = require("./controllers/postController")
 
 const app = express();
 
@@ -56,9 +56,7 @@ app.use(passport.session());
 
 app.use("/new-post", postsRoute);
 
-app.get("/", (req,res) =>{
-  res.render("index", {user:req.user})
-});
+app.get("/", postController.post_list);
 
 app.get("/sign-up", (req,res) => res.render("sign-up-form",{ title:"Sign Up"}))
 
@@ -135,10 +133,10 @@ passport.serializeUser((user,done) => {
 passport.deserializeUser(async(id,done) => {
   try{
     const user = await User.findById(id);
-    console.log("user found")
+    //console.log("user found")
     done(null,user);
   }catch(err){
-    console.log("user not found")
+    //console.log("user not found")
     done(err)}
 })
 

@@ -6,8 +6,9 @@
 body {
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-  background-color: var(--primary-light);
-  color: var(--primary-dark);
+  background-color: var(--primary-dark);
+  color: var(--primary-light);
+  text-align: center;
 }
 
 a {
@@ -36,4 +37,33 @@ button:hover{
 .homePageButtons{
   margin-right: 5px;
   margin-top: 10px;
+}
+
+.postUser{
+  font-style: italic;
+  font-size: 14px;
+}
+
+.postDate{
+  font-size: 12px;
+}
+
+.postTitle{
+  font-size: 20px;
+}
+
+.postDesc{
+  font-size: 16px;
+}
+
+.postWrapper{
+  border-bottom: 3px var(--primary-light) solid;
+  width: 200px;
+  list-style: none;
+  text-align: center;
+}
+
+.postContent{
+  /* !how to add a gap between posts*/
+
 }

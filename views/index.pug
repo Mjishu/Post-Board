@@ -2,10 +2,25 @@ extends layout
 
 block content
   h1= title
-
   if user
     h1 Welcome Back #{user.username}
-    block posts
+    h3= title
+    if post_list
+      div.postContent
+        ul       
+            each post in post_list
+                -console.log(post)
+                div.postWrapper
+                  li  
+                      h3.postTitle #{post.title}
+                      p.postDesc #{post.desc}
+                      p.postUser -#{post.user}
+                      p.postDate #{post.date}  
+
+    else
+      p No posts available
+
+   
     button.homePageButtons(onClick='window.location.href="/new-post"') Post something?
     button.homePageButtons Become a Member
     br

@@ -2,15 +2,4 @@ extends index
 
 block posts
 
-    h3= title
-    if post_list.length
-        ul
-            each post in post_list
-                li  
-                    h5 #{post.title}
-                    p #{post.desc}
-
-                    p #{post.date}
-
-            -const hyphen = "-".repeat(30)
-            p= hyphen
+    
