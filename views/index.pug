@@ -9,13 +9,15 @@ block content
       div.postContent
         ul       
             each post in post_list
-                -console.log(post)
                 div.postWrapper
                   li  
                       h3.postTitle #{post.title}
                       p.postDesc #{post.desc}
                       p.postUser -#{post.user}
                       p.postDate #{post.date}  
+                      if user.admin 
+                        p
+                          a(href=post.url + "/delete") Delete
 
     else
       p No posts available

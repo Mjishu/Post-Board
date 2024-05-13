@@ -43,5 +43,22 @@ exports.post_list = asyncHandler(async(req,res,next) =>{ //! I need to figure ou
    
 })
 
+exports.deletePost_get = asyncHandler(async(req,res,next) => {
+    console.log("delete Post get")
+    const post = await Post.findById(req.params.id).exec()
+
+    if(post === null){
+        res.redirect("/")
+    }
+    console.log(post._id)
+    res.render("delete-post",{title:"Delete Post", post:post})
+})
+
+exports.deletePost_post = asyncHandler(async(req,res,next) => {
+
+    await Post.findByIdAndDelete(req.params.id) //! What do i replace postId with
+    res.redirect("/")
+})
+
 //todo: Check where post_list gets called, idk if thats it but that might be why its not loading any posts? its not logging any of my post elements but
 //todo: ill try making a new post and see if it logs the create elements?

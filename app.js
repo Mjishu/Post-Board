@@ -27,7 +27,8 @@ const User = mongoose.model(
     email: {type:String ,required: true},
     username: {type:String ,required: true},
     password: {type:String ,required: true},
-    member:{type:Boolean}
+    member:{type:Boolean},
+    admin:{type:Boolean}
   })
 )
 
@@ -57,6 +58,10 @@ app.use(passport.session());
 app.use("/new-post", postsRoute);
 
 app.get("/", postController.post_list);
+
+app.get('/:id/delete', postController.deletePost_get);
+
+app.post("/:id/delete", postController.deletePost_post)
 
 app.get("/sign-up", (req,res) => res.render("sign-up-form",{ title:"Sign Up"}))
 
@@ -100,7 +105,10 @@ app.post("/sign-up",
       const user = new User({
         email: req.body.email,
         username: req.body.username,
-        password:hashedPassword
+        password:hashedPassword,
+        member: false,
+        admin:false
+        
       })
       const result = await user.save();
       res.redirect('/');
