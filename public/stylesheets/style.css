@@ -4,7 +4,7 @@
 }
 
 body {
-  padding: 50px;
+
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
   background-color: var(--primary-light);
   color: var(--primary-dark);
@@ -61,9 +61,13 @@ button:hover{
   width: 200px;
   list-style: none;
   text-align: center;
+  margin:10px;
 }
 
 .postContent{
-  /* !how to add a gap between posts*/
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 
 }
